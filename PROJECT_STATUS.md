@@ -1,5 +1,3 @@
-# RE2 Online Co-op — Project Status
-
 ## Project goal
 
 Develop a free online co-op prototype for Resident Evil 2 Remake (2019),
@@ -12,6 +10,7 @@ building on the existing Local Couch Co-op mod where possible.
 - Other player: Windows 11, Steam
 - Repository: ~/re2-online-coop
 - Branch: main
+- Development tools and services must be free.
 
 ## Safety rules
 
@@ -22,6 +21,8 @@ building on the existing Local Couch Co-op mod where possible.
 - Do not test internet connectivity or router forwarding until that
   stage is explicitly planned.
 - Use one terminal task per instruction and inspect its actual output.
+- Prefer small, testable changes with Git checkpoints.
+- Preserve existing Local Couch Co-op gameplay logic where possible.
 
 ## Completed
 
@@ -31,58 +32,62 @@ building on the existing Local Couch Co-op mod where possible.
 - [x] Copied the existing Local Couch Co-op Lua script into reference/.
 - [x] Inspected the virtual gamepad and Player 2 input update logic.
 - [x] Created prototype/player_state.py.
-- [x] Verified valid player state values.
-- [x] Verified rejection of invalid stick, trigger, sequence, and button values.
+- [x] Validated sequence numbers, button masks, stick values, and triggers.
 - [x] Added JSON serialization and deserialization for PlayerState.
-- [x] Tested rejection of malformed and invalid JSON states.
 - [x] Added StateReceiver to reject duplicate and stale sequence numbers.
 - [x] Added MessageHandler for JSON validation and state reception.
-- [x] Added six automated MessageHandler tests; all pass.
+- [x] Added tests for valid, malformed, and invalid player-state messages.
+- [x] Added a bounded UDP state receiver on localhost port 37021 by default.
+- [x] Added tests for packet size limits and malformed datagrams.
+- [x] Ran the complete automated test suite: 13 tests passed.
+- [x] Ran a local UDP loopback integration check successfully.
+- [x] Saved the bounded UDP receiver and tests in commit 5a03913.
+- [x] Inspected Lua PD.update(), st.set_p2(), and st.p2_choices().
 
 ## Current implementation
 
-- prototype/server.py: UDP echo server; HOST was changed to 0.0.0.0
-  and this change is not yet committed.
-- prototype/client.py: local UDP test client.
+- prototype/server.py: UDP echo server bound to 0.0.0.0:37020.
+  Do not run it for internet testing until that stage is planned.
+- prototype/client.py: UDP test client.
 - prototype/player_state.py: validated PlayerState dataclass with JSON serialization.
 - prototype/state_receiver.py: accepts only strictly newer player states.
 - prototype/message_handler.py: validates incoming JSON state messages.
-- tests/test_message_handler.py: six automated tests.
-- reference/local-couch-co-op/re2coop_main.lua: local reference copy;
-  not tracked by Git.
+- prototype/udp_receiver.py: bounded UDP receiver; binds to localhost by default.
+- tests/: automated tests for message handling and UDP receiver.
+- reference/local-couch-co-op/re2coop_main.lua: local reference copy of the
+  third-party mod; intentionally not tracked by Git.
 
-## Current Git state at last inspection
+## Lua integration findings
 
-The last observed working tree contained:
-- Modified: PROJECT_STATUS.md
-- Modified: prototype/player_state.py
-- Modified: prototype/server.py
-- Untracked: prototype/state_receiver.py
-- Untracked: reference/ (local third-party source; do not commit)
+- PD.vpad is the existing virtual gamepad used by Player 2.
+- PD.update() updates its buttons, sticks, and triggers.
+- st.set_p2() selects the local input source and assigns the virtual pad.
+- st.p2_choices() populates the existing local input selection menu.
+- No direct socket API was found in the searched Lua source. This does not
+  prove that no networking option exists in the wider REFramework environment.
+- A local Python-to-Lua bridge is one option to investigate, not yet implemented.
+- No Lua source changes or installed-game changes have been made.
 
-The .gitignore excludes Python caches, virtual environments, and local
-environment files. Check `git status --short` before each commit.
+## Git and reference-source rules
 
+- Check `git status --short` before each commit.
+- Keep reference/ untracked until redistribution rights are understood.
+- Never stage reference/ when committing project code or documentation.
+- Keep project notes current so development can resume after a break.
 
 ## Next steps
 
-1. Add Python cache exclusions to .gitignore.
-2. Design a bounded UDP message receiver that uses MessageHandler.
-3. Test packet size limits and malformed datagrams.
-4. Inspect the existing mod's input integration points further.
-5. Only later plan safe integration and two-computer testing.
+1. Verify this documentation update and inspect the working tree.
+2. Commit the documentation update.
+3. Continue evaluating a safe local Python-to-Lua bridge without launching the game.
+4. Define freshness, rate, and timeout requirements for remote input.
+5. Design the Lua integration only after the bridge approach is justified.
+6. Plan two-computer testing later; do not test internet connectivity or router forwarding yet.
 
 ## Important limitations
-cd ~/re2-online-coop && cat > .gitignore <<'EOF'
-# Python-generated files
-__pycache__/
-*.py[cod]
 
-# Virtual environments
-.venv/
-venv/
-
-# Local environment and secrets
-.env
-.env.*
-!.env.example
+- The UDP prototype is not yet integrated into the game.
+- The project does not yet provide online co-op.
+- Packet validation and local loopback tests do not establish internet reliability,
+  latency, security, or compatibility with the game.
+- Third-party source licensing and redistribution permissions remain unresolved.
