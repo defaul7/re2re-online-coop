@@ -108,3 +108,14 @@ building on the existing Local Couch Co-op mod where possible.
 - Existing PD.read_ext() throttles file reads; its source comments report 2 ms and occasional 16–20 ms stalls from frequent file reads.
 - Do not read the bridge file every frame. A safe update interval, stale-input timeout, and path-sharing method must be established before Lua integration.
 - No Lua or installed-game files have been modified.
+
+## Native REFramework diagnostic plugin
+
+- Added `prototype/reframework_plugin.cpp`, a minimal diagnostic plugin using the REFramework `v1.5.9.1` API header.
+- The plugin declares `reframework_plugin_required_version` and `reframework_plugin_initialize`.
+- The Lua-state callbacks are registered during initialization; they currently perform no game operations.
+- Built `build/re2_online_coop.dll` with `x86_64-w64-mingw32-g++` using the `v1.5.9.1` headers.
+- Verified that the output is a 64-bit Windows PE DLL and that both required exports are present.
+- The DLL has NOT been loaded by REFramework yet. Runtime compatibility, callback behavior, and logging remain unverified.
+- `build/` is ignored by Git. Do not copy the DLL into the installed game until a separate, explicit test plan is agreed.
+- The diagnostic plugin is not an online-co-op implementation and does not exchange network or player-state data.
