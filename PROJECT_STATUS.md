@@ -43,6 +43,10 @@ building on the existing Local Couch Co-op mod where possible.
 - [x] Ran a local UDP loopback integration check successfully.
 - [x] Saved the bounded UDP receiver and tests in commit 5a03913.
 - [x] Inspected Lua PD.update(), st.set_p2(), and st.p2_choices().
+- [x] Added prototype/file_bridge.py for atomic JSON state-file updates.
+- [x] Added six isolated FileBridge tests using temporary directories.
+- [x] Ran the complete automated test suite: 19 tests passed.
+- [x] Committed the Python file bridge prototype as 3e494ff.
 
 ## Current implementation
 
@@ -53,7 +57,9 @@ building on the existing Local Couch Co-op mod where possible.
 - prototype/state_receiver.py: accepts only strictly newer player states.
 - prototype/message_handler.py: validates incoming JSON state messages.
 - prototype/udp_receiver.py: bounded UDP receiver; binds to localhost by default.
-- tests/: automated tests for message handling and UDP receiver.
+- prototype/file_bridge.py: atomic JSON file bridge prototype for Python state files.
+- tests/test_file_bridge.py: six file-bridge tests using temporary directories.
+- tests/: automated tests for file bridge, message handling, and UDP receiver.
 - reference/local-couch-co-op/re2coop_main.lua: local reference copy of the
   third-party mod; intentionally not tracked by Git.
 
@@ -65,7 +71,8 @@ building on the existing Local Couch Co-op mod where possible.
 - st.p2_choices() populates the existing local input selection menu.
 - No direct socket API was found in the searched Lua source. This does not
   prove that no networking option exists in the wider REFramework environment.
-- A local Python-to-Lua bridge is one option to investigate, not yet implemented.
+- A Python file bridge prototype exists, but it has not been tested with REFramework.
+- The actual REFramework data path and file-sharing behavior remain unverified.
 - No Lua source changes or installed-game changes have been made.
 
 ## Git and reference-source rules
@@ -79,8 +86,8 @@ building on the existing Local Couch Co-op mod where possible.
 
 1. Verify this documentation update and inspect the working tree.
 2. Commit the documentation update.
-3. Continue evaluating a safe local Python-to-Lua bridge without launching the game.
-4. Define freshness, rate, and timeout requirements for remote input.
+3. Evaluate safe file exchange and the REFramework data path without changing game files.
+4. Define freshness, update-rate, and timeout requirements for remote input.
 5. Design the Lua integration only after the bridge approach is justified.
 6. Plan two-computer testing later; do not test internet connectivity or router forwarding yet.
 
