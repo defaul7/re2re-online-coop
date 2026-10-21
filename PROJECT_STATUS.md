@@ -36,6 +36,8 @@ building on the existing Local Couch Co-op mod where possible.
 - [x] Added JSON serialization and deserialization for PlayerState.
 - [x] Tested rejection of malformed and invalid JSON states.
 - [x] Added StateReceiver to reject duplicate and stale sequence numbers.
+- [x] Added MessageHandler for JSON validation and state reception.
+- [x] Added six automated MessageHandler tests; all pass.
 
 ## Current implementation
 
@@ -44,6 +46,8 @@ building on the existing Local Couch Co-op mod where possible.
 - prototype/client.py: local UDP test client.
 - prototype/player_state.py: validated PlayerState dataclass with JSON serialization.
 - prototype/state_receiver.py: accepts only strictly newer player states.
+- prototype/message_handler.py: validates incoming JSON state messages.
+- tests/test_message_handler.py: six automated tests.
 - reference/local-couch-co-op/re2coop_main.lua: local reference copy;
   not tracked by Git.
 
@@ -63,8 +67,8 @@ environment files. Check `git status --short` before each commit.
 ## Next steps
 
 1. Add Python cache exclusions to .gitignore.
-2. Connect the state receiver to a testable message-handling layer.
-3. Add automated tests for malformed network messages.
+2. Design a bounded UDP message receiver that uses MessageHandler.
+3. Test packet size limits and malformed datagrams.
 4. Inspect the existing mod's input integration points further.
 5. Only later plan safe integration and two-computer testing.
 
