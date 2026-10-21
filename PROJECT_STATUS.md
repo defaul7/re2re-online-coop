@@ -33,31 +33,40 @@ building on the existing Local Couch Co-op mod where possible.
 - [x] Created prototype/player_state.py.
 - [x] Verified valid player state values.
 - [x] Verified rejection of invalid stick, trigger, sequence, and button values.
+- [x] Added JSON serialization and deserialization for PlayerState.
+- [x] Tested rejection of malformed and invalid JSON states.
+- [x] Added StateReceiver to reject duplicate and stale sequence numbers.
 
 ## Current implementation
 
 - prototype/server.py: UDP echo server; HOST was changed to 0.0.0.0
   and this change is not yet committed.
 - prototype/client.py: local UDP test client.
-- prototype/player_state.py: validated PlayerState dataclass.
+- prototype/player_state.py: validated PlayerState dataclass with JSON serialization.
+- prototype/state_receiver.py: accepts only strictly newer player states.
 - reference/local-couch-co-op/re2coop_main.lua: local reference copy;
   not tracked by Git.
 
 ## Current Git state at last inspection
 
+The last observed working tree contained:
+- Modified: PROJECT_STATUS.md
+- Modified: prototype/player_state.py
 - Modified: prototype/server.py
-- Untracked: prototype/player_state.py
-- Untracked: reference/
-- Python cache files are excluded by .gitignore.
+- Untracked: prototype/state_receiver.py
+- Untracked: reference/ (local third-party source; do not commit)
+
+The .gitignore excludes Python caches, virtual environments, and local
+environment files. Check `git status --short` before each commit.
+
 
 ## Next steps
 
 1. Add Python cache exclusions to .gitignore.
-2. Review and test the player state module.
-3. Design and test JSON serialization for player state.
-4. Define network message handling and stale-packet protection.
-5. Inspect the existing mod's input integration points further.
-6. Only later plan safe integration and two-computer testing.
+2. Connect the state receiver to a testable message-handling layer.
+3. Add automated tests for malformed network messages.
+4. Inspect the existing mod's input integration points further.
+5. Only later plan safe integration and two-computer testing.
 
 ## Important limitations
 cd ~/re2-online-coop && cat > .gitignore <<'EOF'
