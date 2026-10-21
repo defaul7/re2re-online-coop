@@ -98,3 +98,13 @@ building on the existing Local Couch Co-op mod where possible.
 - Packet validation and local loopback tests do not establish internet reliability,
   latency, security, or compatibility with the game.
 - Third-party source licensing and redistribution permissions remain unresolved.
+
+## File bridge research
+
+- REFramework fs.read(filename) and fs.write(filename, data) are documented; relative paths resolve under reframework/data/ by default.
+- The installed game has a reframework/data directory, but Python-to-Lua file exchange has not been tested.
+- PD.vpad stores buttons, previous-frame buttons, two sticks, and two triggers; st.p2_dev reads the virtual pad.
+- PD.update() runs once per game frame. Button-down and button-up depend on current and previous button masks.
+- Existing PD.read_ext() throttles file reads; its source comments report 2 ms and occasional 16–20 ms stalls from frequent file reads.
+- Do not read the bridge file every frame. A safe update interval, stale-input timeout, and path-sharing method must be established before Lua integration.
+- No Lua or installed-game files have been modified.
